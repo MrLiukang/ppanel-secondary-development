@@ -1,0 +1,9 @@
+Log:
+  Level: debug
+  Output: ""
+  Access: none
+Api:
+  ApiHost: http://ppanel:8080
+  ServerID: 103
+  SecretKey: "12345678"
+  Timeout: 10

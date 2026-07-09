@@ -1,0 +1,107 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: ppanel-local-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ppanel
+      MYSQL_USER: ppanel
+      MYSQL_PASSWORD: ppanel
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    container_name: ppanel-local-redis
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  ppanel:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+      args:
+        VERSION: local-xray-settings
+    container_name: ppanel-local-server
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "18080:8080"
+    volumes:
+      - ./ppanel.yaml:/app/etc/ppanel.yaml:ro
+      - ./cache:/app/cache
+    restart: unless-stopped
+
+  admin-web:
+    build:
+      context: ../front
+      dockerfile: ../docker-local/admin-web.Dockerfile
+    container_name: ppanel-local-admin-web
+    environment:
+      VITE_API_PREFIX: http://localhost:18080
+    ports:
+      - "13001:3001"
+    volumes:
+      - ../front/apps/admin/src/layout/navs.ts:/app/apps/admin/src/layout/navs.ts:ro
+      - ../front/apps/admin/src/sections/xray-settings/relay-rules-input.tsx:/app/apps/admin/src/sections/xray-settings/relay-rules-input.tsx:ro
+      - ../front/apps/admin/src/sections/xray-settings/routing-rules-input.tsx:/app/apps/admin/src/sections/xray-settings/routing-rules-input.tsx:ro
+      - ../front/apps/admin/src/sections/xray-settings/index.tsx:/app/apps/admin/src/sections/xray-settings/index.tsx:ro
+      - ../front/apps/admin/src/sections/servers/server-node-config.tsx:/app/apps/admin/src/sections/servers/server-node-config.tsx:ro
+      - ../front/packages/ui/src/services/admin/typings.d.ts:/app/packages/ui/src/services/admin/typings.d.ts:ro
+    depends_on:
+      - ppanel
+
+  node-a:
+    build:
+      context: ../node
+      dockerfile: Dockerfile
+    container_name: ppanel-node-a
+    depends_on:
+      - ppanel
+      - node-b
+      - node-c
+    ports:
+      - "1643:643"
+      - "1743:743"
+    volumes:
+      - ./node-a.yml:/etc/PPanel-node/config.yml:ro
+    restart: unless-stopped
+
+  node-b:
+    build:
+      context: ../node
+      dockerfile: Dockerfile
+    container_name: ppanel-node-b
+    depends_on:
+      - ppanel
+    ports:
+      - "26443:6443"
+    volumes:
+      - ./node-b.yml:/etc/PPanel-node/config.yml:ro
+    restart: unless-stopped
+
+  node-c:
+    build:
+      context: ../node
+      dockerfile: Dockerfile
+    container_name: ppanel-node-c
+    depends_on:
+      - ppanel
+    ports:
+      - "27443:7443"
+    volumes:
+      - ./node-c.yml:/etc/PPanel-node/config.yml:ro
+    restart: unless-stopped
