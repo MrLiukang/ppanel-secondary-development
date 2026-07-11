@@ -7,7 +7,7 @@ COPY apps ./apps
 COPY packages ./packages
 COPY docs ./docs
 
-RUN bun install --frozen-lockfile
+RUN bun install --frozen-lockfile --registry https://registry.npmjs.org
 
 EXPOSE 3001
 
