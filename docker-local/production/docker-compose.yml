@@ -1,0 +1,83 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ppanel
+      MYSQL_USER: ppanel
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  ppanel:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+      args:
+        VERSION: production-single-server
+    ports:
+      - "127.0.0.1:18080:8080"
+    volumes:
+      - ./ppanel.yaml:/app/etc/ppanel.yaml:ro
+      - ppanel-cache:/app/cache
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  admin-web:
+    build:
+      context: ../../front
+      dockerfile: ../docker-local/production/web.Dockerfile
+      args:
+        APP: admin
+    ports:
+      - "127.0.0.1:13001:80"
+    depends_on:
+      - ppanel
+    restart: unless-stopped
+
+  user-web:
+    build:
+      context: ../../front
+      dockerfile: ../docker-local/production/web.Dockerfile
+      args:
+        APP: user
+    ports:
+      - "127.0.0.1:13000:80"
+    depends_on:
+      - ppanel
+    restart: unless-stopped
+
+  node:
+    build:
+      context: ../../node
+      dockerfile: Dockerfile
+    network_mode: host
+    volumes:
+      - ./node.yml:/etc/PPanel-node/config.yml:ro
+    depends_on:
+      - ppanel
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  redis-data:
+  ppanel-cache:

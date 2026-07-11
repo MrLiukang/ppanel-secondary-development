@@ -1,0 +1,10 @@
+Log:
+  Level: info
+  Output: ""
+  Access: none
+
+Api:
+  ApiHost: http://127.0.0.1:18080
+  ServerID: 1
+  SecretKey: "__NODE_SECRET__"
+  Timeout: 10
