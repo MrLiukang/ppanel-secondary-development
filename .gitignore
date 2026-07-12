@@ -1,0 +1,16 @@
+# Local and generated files
+NUL
+docker-local/cache/
+docker-local/production/.env
+docker-local/production/mysql-data/
+docker-local/production/redis-data/
+docker-local/production/ppanel-cache/
+
+# Runtime secrets and generated sidecar files
+docker-local/production/relay-sidecar/
+docker-local/production/anytls-sidecars/
+
+# Editor and OS files
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PPanel Node Routing UI Mockup</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --panel: #ffffff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --soft: #f3f4f6;
+        --primary: #2563eb;
+        --green: #15803d;
+        --red: #dc2626;
+        --amber: #b45309;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-size: 14px;
+      }
+
+      .app {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 248px 1fr;
+      }
+
+      .sidebar {
+        background: #111827;
+        color: #d1d5db;
+        padding: 18px 14px;
+      }
+
+      .brand {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        margin: 4px 8px 22px;
+      }
+
+      .nav-section {
+        margin-top: 18px;
+      }
+
+      .nav-title {
+        color: #9ca3af;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        margin: 0 8px 8px;
+        text-transform: uppercase;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 38px;
+        border-radius: 6px;
+        padding: 8px 10px;
+      }
+
+      .nav-item.active {
+        background: #1f2937;
+        color: #fff;
+      }
+
+      .main {
+        padding: 22px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 22px;
+        line-height: 1.2;
+      }
+
+      .subtitle {
+        margin-top: 5px;
+        color: var(--muted);
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 36px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--panel);
+        color: var(--text);
+        padding: 0 12px;
+        font-weight: 600;
+      }
+
+      .button.primary {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 420px;
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 56px;
+        border-bottom: 1px solid var(--line);
+        padding: 0 16px;
+      }
+
+      .panel-title {
+        font-weight: 700;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 6px;
+        border-bottom: 1px solid var(--line);
+        padding: 10px 12px 0;
+      }
+
+      .tab {
+        border-radius: 6px 6px 0 0;
+        padding: 10px 12px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .tab.active {
+        background: var(--soft);
+        color: var(--text);
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+      }
+
+      .segmented {
+        display: inline-flex;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        overflow: hidden;
+      }
+
+      .segmented span {
+        border-right: 1px solid var(--line);
+        padding: 8px 11px;
+        color: var(--muted);
+      }
+
+      .segmented span:last-child {
+        border-right: 0;
+      }
+
+      .segmented .selected {
+        background: #e8f0ff;
+        color: var(--primary);
+        font-weight: 700;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border-top: 1px solid var(--line);
+        padding: 11px 12px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: #fafafa;
+        color: #4b5563;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 22px;
+        border: 1px solid #dbeafe;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        padding: 0 8px;
+        font-size: 12px;
+        font-weight: 600;
+        margin: 0 4px 4px 0;
+        white-space: nowrap;
+      }
+
+      .tag.green {
+        border-color: #dcfce7;
+        background: #f0fdf4;
+        color: var(--green);
+      }
+
+      .tag.red {
+        border-color: #fee2e2;
+        background: #fef2f2;
+        color: var(--red);
+      }
+
+      .tag.gray {
+        border-color: var(--line);
+        background: var(--soft);
+        color: #4b5563;
+      }
+
+      .switch {
+        width: 36px;
+        height: 20px;
+        border-radius: 999px;
+        background: var(--primary);
+        padding: 2px;
+      }
+
+      .switch::after {
+        content: "";
+        display: block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        transform: translateX(16px);
+      }
+
+      .form {
+        padding: 16px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        color: #374151;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .input,
+      .textarea,
+      .select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        color: var(--text);
+        padding: 9px 10px;
+      }
+
+      .textarea {
+        min-height: 84px;
+        line-height: 1.45;
+        resize: vertical;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .drawer-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid var(--line);
+        padding: 14px 16px;
+      }
+
+      .mode-note {
+        border: 1px solid #fde68a;
+        border-radius: 8px;
+        background: #fffbeb;
+        color: #92400e;
+        line-height: 1.5;
+        padding: 10px 12px;
+        margin: 0 16px 14px;
+      }
+
+      .small-actions {
+        display: flex;
+        gap: 8px;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 1100px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">PPanel Admin</div>
+        <div class="nav-section">
+          <div class="nav-title">Dashboard</div>
+          <div class="nav-item">Overview</div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-title">Maintenance</div>
+          <div class="nav-item active">Servers</div>
+          <div class="nav-item">Nodes</div>
+          <div class="nav-item active">Xray Settings</div>
+          <div class="nav-item">Subscribe Config</div>
+          <div class="nav-item">Product Management</div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-title">Business</div>
+          <div class="nav-item">Users</div>
+          <div class="nav-item">Orders</div>
+          <div class="nav-item">Subscribes</div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <div>
+            <h1>Xray Settings</h1>
+            <div class="subtitle">
+              New PPanel Maintenance module for global Xray outbounds and
+              routing rules. Server-specific overrides remain in Server
+              Management -> Node Config.
+            </div>
+          </div>
+          <button class="button primary">Save Settings</button>
+        </div>
+
+        <div class="layout">
+          <section class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Global Xray Settings</div>
+              <button class="button">Maintenance / Xray Settings</button>
+            </div>
+
+            <div class="tabs">
+              <div class="tab">Basic</div>
+              <div class="tab">DNS</div>
+              <div class="tab">Outbounds</div>
+              <div class="tab active">Routing Rules</div>
+              <div class="tab">Block</div>
+            </div>
+
+            <div class="toolbar">
+              <div class="segmented">
+                <span class="selected">Global Rules</span>
+                <span>Managed under Maintenance</span>
+              </div>
+              <button class="button primary">+ Add Rule</button>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 52px">On</th>
+                  <th style="width: 70px">Order</th>
+                  <th>Remark</th>
+                  <th>Match</th>
+                  <th>Inbound Tags</th>
+                  <th>Outbound Tag</th>
+                  <th style="width: 120px">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="switch"></div></td>
+                  <td>10</td>
+                  <td>
+                    <strong>CN direct</strong>
+                    <div class="hint">Domestic traffic bypasses proxy</div>
+                  </td>
+                  <td>
+                    <span class="tag">geosite:cn</span>
+                    <span class="tag">geoip:cn</span>
+                  </td>
+                  <td><span class="tag gray">All inbounds</span></td>
+                  <td><span class="tag green">direct</span></td>
+                  <td>
+                    <div class="small-actions">
+                      <button class="button">Edit</button>
+                      <button class="button">Del</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="switch"></div></td>
+                  <td>20</td>
+                  <td>
+                    <strong>Block BT</strong>
+                    <div class="hint">Reduce abuse risk</div>
+                  </td>
+                  <td>
+                    <span class="tag">protocol:bittorrent</span>
+                    <span class="tag">network:tcp,udp</span>
+                  </td>
+                  <td><span class="tag gray">All inbounds</span></td>
+                  <td><span class="tag red">block</span></td>
+                  <td>
+                    <div class="small-actions">
+                      <button class="button">Edit</button>
+                      <button class="button">Del</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><div class="switch"></div></td>
+                  <td>30</td>
+                  <td>
+                    <strong>YouTube via WARP</strong>
+                    <div class="hint">Specific streaming outbound</div>
+                  </td>
+                  <td>
+                    <span class="tag">geosite:youtube</span>
+                    <span class="tag">domain:googlevideo.com</span>
+                  </td>
+                  <td>
+                    <span class="tag">vless</span>
+                    <span class="tag">trojan</span>
+                  </td>
+                  <td><span class="tag">WARP</span></td>
+                  <td>
+                    <div class="small-actions">
+                      <button class="button">Edit</button>
+                      <button class="button">Del</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <aside class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Add Routing Rule</div>
+              <span class="tag gray">3x-ui style</span>
+            </div>
+
+            <div class="mode-note">
+              Default mode shows protocol-friendly inbound choices. Advanced
+              mode reveals real Xray inbound tags.
+            </div>
+
+            <div class="form">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Remark</label>
+                  <input class="input" value="YouTube via WARP" />
+                </div>
+                <div class="field">
+                  <label>Order</label>
+                  <input class="input" value="30" />
+                </div>
+
+                <div class="field full">
+                  <label>Domain</label>
+                  <textarea class="textarea">geosite:youtube
+domain:googlevideo.com</textarea>
+                  <div class="hint">
+                    Supports full:, domain:, keyword:, regexp:, geosite:
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>IP</label>
+                  <textarea class="textarea" placeholder="geoip:private"></textarea>
+                </div>
+
+                <div class="field">
+                  <label>Port</label>
+                  <input class="input" placeholder="80,443 or 1000-2000" />
+                </div>
+                <div class="field">
+                  <label>Network</label>
+                  <select class="select">
+                    <option>tcp,udp</option>
+                    <option>tcp</option>
+                    <option>udp</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>Protocol</label>
+                  <input class="input" placeholder="bittorrent" />
+                </div>
+                <div class="field">
+                  <label>Outbound Tag</label>
+                  <select class="select">
+                    <option>WARP</option>
+                    <option>direct</option>
+                    <option>block</option>
+                    <option>Default</option>
+                  </select>
+                </div>
+
+                <div class="field full">
+                  <label>Inbound Tags</label>
+                  <div>
+                    <span class="tag">vless</span>
+                    <span class="tag">trojan</span>
+                    <span class="tag gray">+ Select inbound</span>
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label>Advanced inboundTag</label>
+                  <textarea class="textarea">[https://panel.example.com]-vless:1
+[https://panel.example.com]-trojan:1</textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="drawer-footer">
+              <button class="button">Cancel</button>
+              <button class="button primary">Save Rule</button>
+            </div>
+          </aside>
+        </div>
+
+        <section class="panel" style="margin-top: 18px">
+          <div class="panel-header">
+            <div class="panel-title">Server Management -> Node Config Override</div>
+            <span class="tag">Server: Hong Kong 01</span>
+          </div>
+          <div class="tabs">
+            <div class="tab">Basic</div>
+            <div class="tab">DNS</div>
+            <div class="tab">Outbounds</div>
+            <div class="tab active">Routing Rules</div>
+            <div class="tab">Block</div>
+          </div>
+          <div class="toolbar">
+            <div class="segmented">
+              <span>Inherit global</span>
+              <span class="selected">Append before global</span>
+              <span>Override global</span>
+            </div>
+            <button class="button primary">+ Add Server Rule</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Order</th>
+                <th>Remark</th>
+                <th>Match</th>
+                <th>Inbound Tags</th>
+                <th>Outbound Tag</th>
+                <th>Effective Order</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>5</td>
+                <td><strong>HK OpenAI via WARP</strong></td>
+                <td>
+                  <span class="tag">geosite:openai</span>
+                  <span class="tag">domain:chatgpt.com</span>
+                </td>
+                <td><span class="tag">vless</span></td>
+                <td><span class="tag">WARP</span></td>
+                <td>
+                  Server rule first, then global rules by order.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

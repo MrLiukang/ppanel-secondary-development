@@ -77,6 +77,25 @@ services:
       - ppanel
     restart: unless-stopped
 
+  anytls-sidecar-manager:
+    build:
+      context: ../../backend
+      dockerfile: ../docker-local/production/anytls-sidecar-manager.Dockerfile
+    environment:
+      PPANEL_URL: http://127.0.0.1:18080
+      PPANEL_SERVER_ID: ${PPANEL_SERVER_ID:-1}
+      PPANEL_SECRET_KEY: ${PPANEL_SECRET_KEY}
+      SIDECAR_HOST_ROOT: /host/ppanel
+      SIDECAR_DOCKER_ROOT: /opt/ppanel
+      SIDECAR_POLL_SECONDS: ${SIDECAR_POLL_SECONDS:-30}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/ppanel:/host/ppanel
+    network_mode: host
+    depends_on:
+      - ppanel
+    restart: unless-stopped
+
 volumes:
   mysql-data:
   redis-data:

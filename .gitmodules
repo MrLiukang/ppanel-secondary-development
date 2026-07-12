@@ -1,0 +1,14 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/MrLiukang/ppanel-backend-secondary.git
+	branch = codex/secondary-development
+
+[submodule "front"]
+	path = front
+	url = https://github.com/MrLiukang/ppanel-frontend-secondary.git
+	branch = codex/secondary-development
+
+[submodule "node"]
+	path = node
+	url = https://github.com/MrLiukang/ppanel-node-secondary.git
+	branch = codex/secondary-development
