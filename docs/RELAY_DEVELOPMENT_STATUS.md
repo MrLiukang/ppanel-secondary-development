@@ -22,7 +22,7 @@
 
 ### 2.2 控制端规则
 
-- AnyTLS、VLESS/XHTTP 在节点侧转换为本机 SOCKS 出口。
+- AnyTLS、VLESS/XHTTP、Trojan、Shadowsocks 在节点侧转换为本机 SOCKS 出口。
 - 每个订阅组使用独立本地端口段：组 1 为 `31001+`，组 2 为 `31101+`。
 - 端口公式：`31001 + (group_id - 1) * 100`。
 - 应用任意订阅组时，合并同一服务器上所有已启用订阅组，避免后应用的组覆盖先应用的组。
@@ -39,7 +39,7 @@ production-anytls-sidecar-manager-1 -> ppanel-relay-sidecar
 
 - 容器名：`ppanel-relay-sidecar`。
 - 使用 host network，内部 SOCKS 端口绑定 `127.0.0.1`。
-- AnyTLS 使用现有 `anytls-client`，VLESS/XHTTP 使用 Xray。
+- AnyTLS 使用现有 `anytls-client`，VLESS/XHTTP、Trojan、Shadowsocks 使用 Xray。
 - manager 默认每 30 秒轮询控制端，规则变化后重建统一 sidecar。
 
 ### 2.4 健康检查和节点同步
@@ -120,7 +120,7 @@ manager
 - 订阅组页面还没有展示最近探测时间、失败原因和连续失败次数。
 - 自动更新开关已保存，但“定时重新拉取、解析、应用”的调度链路仍需完善。
 - 健康检查目前固定使用 `google.com/generate_204`，后续应支持可配置探测地址和 TCP/TLS/HTTP 多级探测。
-- Trojan 已可解析，但还没有接入统一 sidecar 运行时。
+- Trojan 和 Shadowsocks 已接入统一 sidecar 运行时，但仍需使用真实订阅上游完成端到端验收。
 - UDP 转发尚未完成逐节点端到端验收。
 - 失败原因还没有持久化到独立状态表。
 - 规则从订阅中消失后的旧节点回收策略仍需补充。
