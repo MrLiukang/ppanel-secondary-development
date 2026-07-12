@@ -52,6 +52,8 @@ production-anytls-sidecar-manager-1 -> ppanel-relay-sidecar
 4. 探测失败的规则不创建节点；已有节点会被禁用。
 5. 节点标签为 `relay-group:<group_id>,relay-rule:<rule_id>`，更新不会重复创建。
 
+节点名称使用订阅规则自身的 `remark`；当名称与现有节点冲突时自动追加 ` 2`、` 3` 等递增后缀。备注为空时才回退到订阅组名称。
+
 线上验证：组 1 有 7 个健康节点；组 2 的 18 个 VLESS/XHTTP 上游未通过探测，因此未进入节点管理。
 
 ### 2.5 已修复的问题
