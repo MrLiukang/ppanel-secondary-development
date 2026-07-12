@@ -157,3 +157,4 @@ ae10bde feat: create relay sidecars from subscription groups
 - `PPANEL_SECRET_KEY` 仅用于 manager 和控制端内部认证。
 - 外部 HTTPS 建议交给 Nginx/Cloudflare，PPanel 和 manager 只使用内部地址。
 - 一键安装脚本生成随机密钥，但不会自动配置 DNS、Cloudflare 证书或防火墙。
+- 生产后台凭据仅记录在本地忽略文件 `docs/PRODUCTION_ACCESS.local.md`，不会提交到 GitHub。

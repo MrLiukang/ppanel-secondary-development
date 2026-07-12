@@ -2,6 +2,7 @@
 NUL
 docker-local/cache/
 docker-local/production/.env
+docs/PRODUCTION_ACCESS.local.md
 docker-local/production/mysql-data/
 docker-local/production/redis-data/
 docker-local/production/ppanel-cache/
