@@ -69,12 +69,14 @@ docker compose -f "$PROD_DIR/docker-compose.yml" up -d --build
 
 info "Waiting for PPanel"
 for _ in $(seq 1 60); do
-  if curl -fsS http://127.0.0.1:18080/ >/dev/null 2>&1; then
+  status="$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:18080/ || true)"
+  if [[ "$status" =~ ^(2[0-9][0-9]|3[0-9][0-9]|404)$ ]]; then
     break
   fi
   sleep 2
 done
-curl -fsS http://127.0.0.1:18080/ >/dev/null 2>&1 || die "PPanel did not become ready"
+status="$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:18080/ || true)"
+[[ "$status" =~ ^(2[0-9][0-9]|3[0-9][0-9]|404)$ ]] || die "PPanel did not become ready"
 
 info "Installation completed"
 echo "Admin web: http://127.0.0.1:13001"
