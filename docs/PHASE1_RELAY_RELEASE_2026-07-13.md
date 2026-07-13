@@ -73,6 +73,7 @@
 - 生产 PPanel 配置关闭旧 NodeSecret 兼容认证。
 - PowerShell 和 Bash 验收脚本强制检查生产认证开关和固定依赖。
 - Docker Compose 继续使用单 manager、单统一 sidecar 架构。
+- 根仓库前端子模块地址修正为实际承载发布快照的 `ppanel-front-secondary`，保证 `git clone --recursive` 能检出记录的前端 SHA。
 
 根仓库提交：`d9570dd fix: harden production relay deployment`
 
@@ -153,4 +154,3 @@ Node 快照：5cc56d3ec9e41ae36b97b6e1fb7e883bacf82721
 - 先构建镜像，再按依赖顺序更新 Backend、Node、Web、Manager；数据库和 Redis 不重建数据卷。
 - 更新后按“API -> Node 配置 -> 监听端口 -> 本地 SOCKS -> 上游 -> 公网入口”顺序验收。
 - 任何边界失败时停止向下猜测，记录首个失败边界、日志和响应。
-
