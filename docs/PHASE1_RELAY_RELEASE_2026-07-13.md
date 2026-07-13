@@ -44,6 +44,7 @@
 - 新配置构建、校验、启动或监听确认失败时保留旧进程和旧状态。
 - 停止失败时保留 PID、配置和状态文件，避免把仍运行的旧实例误报为已删除。
 - 新进程只有在 PID 身份和 SOCKS 监听均确认后才提交状态。
+- 升级时识别旧版 `port=0` state 和单字段 PID 文件；先删除专用旧 sidecar，再按当前进程身份格式重建，避免 reconcile 永久卡在 `invalid process identity`。
 - 单个订阅组健康回报失败不阻塞其他组。
 - 显式删除或禁用才停止对应运行时；临时缺字段不会误删旧运行时。
 - Docker 构建固定 AnyTLS、Xray、`golang.org/x/net` 和基础镜像版本，禁止 `latest` 与动态 `go mod tidy`。
@@ -122,7 +123,7 @@ git diff --check：各仓库通过。
 
 ```text
 根仓库 master：d9570dd612231680ac914fad51cc3fb1a0fee905
-Backend 快照：59e96a1381022452773af519dbe1397969e602b9
+Backend 快照：cbb84ba01233db1ab958ee910035d943e3afca0d
 Frontend 快照：1ed936ee110d2c97984faa2f252f479f9b777b42
 Node 快照：5cc56d3ec9e41ae36b97b6e1fb7e883bacf82721
 ```
