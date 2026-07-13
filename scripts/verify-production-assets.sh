@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DOCKERFILE="$ROOT_DIR/docker-local/production/anytls-sidecar-manager.Dockerfile"
 ENTRYPOINT="$ROOT_DIR/scripts/relay-sidecar-manager-entrypoint.sh"
 COMPOSE_FILE="$ROOT_DIR/docker-local/production/docker-compose.yml"
+PANEL_CONFIG="$ROOT_DIR/docker-local/production/ppanel.yaml"
 ACCEPTANCE_DOC="$ROOT_DIR/docs/PRODUCTION_RELAY_ACCEPTANCE.md"
 MANAGER_SOURCE="$ROOT_DIR/backend/tools/anytls-sidecar-manager/main.go"
 
@@ -43,7 +44,11 @@ require_match 'sha256sum -c' "$DOCKERFILE" \
   "Xray archive checksum is not verified"
 require_match 'org\.opencontainers\.image\.xray\.version=.*XRAY_VERSION' "$DOCKERFILE" \
   "final image does not expose the pinned Xray version"
-if grep -Eq 'releases/latest|^FROM[[:space:]]+[^[:space:]@]+([[:space:]]+AS[[:space:]]+[^[:space:]]+)?$' "$DOCKERFILE"; then
+require_match '^ARG X_NET_VERSION=v[0-9]+\.[0-9]+\.[0-9]+$' "$DOCKERFILE" \
+  "sidecar manager x/net dependency is not pinned"
+require_match 'go get golang\.org/x/net@\$\{X_NET_VERSION\}' "$DOCKERFILE" \
+  "sidecar manager build does not use the pinned x/net version"
+if grep -Eq 'releases/latest|go mod tidy|^FROM[[:space:]]+[^[:space:]@]+([[:space:]]+AS[[:space:]]+[^[:space:]]+)?$' "$DOCKERFILE"; then
   fail "production Dockerfile contains latest or a base image without a digest"
 fi
 require_match 'COPY --from=anytls-builder /out/anytls-client /usr/local/bin/anytls-client' "$DOCKERFILE" \
@@ -62,6 +67,8 @@ require_match '^const alpineImage = "alpine:3\.20@sha256:[0-9a-f]{64}"$' "$MANAG
   "sidecar Alpine image is not pinned to a manifest digest constant"
 require_match 'docker\("run",.*alpineImage,' "$MANAGER_SOURCE" \
   "dynamic docker run does not use the pinned Alpine image constant"
+require_match '^[[:space:]]*AllowLegacyNodeSecret:[[:space:]]*false[[:space:]]*$' "$PANEL_CONFIG" \
+  "production panel config must reject the legacy global node secret"
 require_match 'AnyTLS.*(failed|failure|unavailable|degraded).*(Trojan|Shadowsocks)|((Trojan|Shadowsocks).*){2}AnyTLS.*(failed|failure|unavailable|degraded)' "$ACCEPTANCE_DOC" \
   "acceptance documentation does not define the AnyTLS-only degraded health state"
 pass "production AnyTLS installation assets are declared"

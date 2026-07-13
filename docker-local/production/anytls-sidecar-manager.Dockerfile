@@ -33,7 +33,10 @@ RUN apk add --no-cache curl unzip \
     && rm -f /tmp/xray.zip
 WORKDIR /src
 COPY backend/tools/anytls-sidecar-manager ./
-RUN go mod init sidecar-manager && go mod tidy && go build -trimpath -o /usr/local/bin/anytls-sidecar-manager .
+ARG X_NET_VERSION=v0.35.0
+RUN go mod init sidecar-manager \
+    && go get golang.org/x/net@${X_NET_VERSION} \
+    && go build -trimpath -o /usr/local/bin/anytls-sidecar-manager .
 COPY scripts/relay-sidecar-manager-entrypoint.sh /usr/local/bin/relay-sidecar-manager-entrypoint
 RUN chmod 0755 /usr/local/bin/relay-sidecar-manager-entrypoint
 ENTRYPOINT ["/usr/local/bin/relay-sidecar-manager-entrypoint"]

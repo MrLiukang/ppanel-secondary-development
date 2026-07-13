@@ -54,6 +54,7 @@ Administrator:
 
 Node:
   NodeSecret: __NODE_SECRET__
+  AllowLegacyNodeSecret: false
   NodePullInterval: 60
   NodePushInterval: 60
   TrafficReportThreshold: 0
