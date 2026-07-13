@@ -26,6 +26,7 @@
 - Node 内部接口认证改为 `HMAC-SHA256(NodeSecret, server_id)`，不同服务器不能复用认证 token。
 - 生产配置显式关闭 `AllowLegacyNodeSecret`，不再接受可访问任意服务器的旧全局密钥。
 - 订阅组 Apply、Save、Delete、Sync 和节点配置 override 更新增加数据库级服务器锁，避免并发覆盖。
+- 升级时只迁移与当前订阅派生结果完整一致的旧 override SOCKS 规则；同端口但字段不同的手工规则继续报冲突并保留。
 - 节点表增加 `relay_group_id`、`relay_rule_id` 显式所有权列，不再依赖可编辑标签判断归属。
 - 增加 MySQL、PostgreSQL、SQLite 所有权迁移和旧标签回填。
 - 管理员普通编辑/删除接口拒绝直接修改托管中转节点。
@@ -123,7 +124,7 @@ git diff --check：各仓库通过。
 
 ```text
 根仓库 master：d9570dd612231680ac914fad51cc3fb1a0fee905
-Backend 快照：cbb84ba01233db1ab958ee910035d943e3afca0d
+Backend 快照：59d15be6965157e16e8cf4607453f0b82ad4ba41
 Frontend 快照：1ed936ee110d2c97984faa2f252f479f9b777b42
 Node 快照：5cc56d3ec9e41ae36b97b6e1fb7e883bacf82721
 ```
