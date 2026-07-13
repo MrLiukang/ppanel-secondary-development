@@ -79,8 +79,8 @@ services:
 
   anytls-sidecar-manager:
     build:
-      context: ../../backend
-      dockerfile: ../docker-local/production/anytls-sidecar-manager.Dockerfile
+      context: ../..
+      dockerfile: docker-local/production/anytls-sidecar-manager.Dockerfile
     environment:
       PPANEL_URL: http://127.0.0.1:18080
       PPANEL_SERVER_ID: ${PPANEL_SERVER_ID:-1}
